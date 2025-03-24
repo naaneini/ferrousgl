@@ -1,0 +1,24 @@
+[package]
+name = "ferrousgl"
+version = "0.0.0"
+edition = "2021"
+authors = ["EqualsAndString <equalsstr@gmail.com>"]
+description = "Simple Rust library to use OpenGl."
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/EqualsAndString/ferrousgl"
+
+[lib]
+name = "ferrousgl"
+path = "src/lib.rs"
+crate-type = ["lib"]
+
+[dependencies]
+gl = "0.14"
+glfw = "0.59.0"
+glam = "0.30.1"
+glm = "0.2.3"
+image = "0.25.5"
+
+[package.metadata.docs.rs]
+all-features = true
