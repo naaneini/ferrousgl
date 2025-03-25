@@ -1,9 +1,9 @@
-use ferrousgl::{GlWindow, Mesh, Shader, Texture};
+use ferrousgl::{GlWindow, Mesh, RenderTexture, Shader, Texture};
 use glam::{Vec3, Mat4};
 
 fn main() {
     // Create a 800x600 window with 60fps
-    let mut window = GlWindow::new(800, 600, "Textured cube", true, 60);
+    let mut window = GlWindow::new(800, 600, "Offscreen Rendering Example", true, 60);
     
     let vertex_shader = r#"
         #version 330 core
@@ -98,18 +98,24 @@ fn main() {
     
     let mut y_rotation = 0.0f32;
     let mut x_rotation = 0.0f32;
+
+    let render_texture = RenderTexture::new(256, 256, true).unwrap();
     
     while !window.should_window_close() {
-        window.clear_color(Vec3::new(0.2, 0.3, 0.3));
-        window.clear_depth();
-        
         // Update rotation
         y_rotation += 0.01;
         x_rotation += 0.005;
         let model = Mat4::from_rotation_y(y_rotation) * Mat4::from_rotation_x(x_rotation);
         
+        // Set the render texture to be rendered on
+        render_texture.bind();
+
+        // Clears the render textures color and depth buffers
+        window.clear_color(Vec3::new(0.0, 0.0, 0.0));
+        window.clear_depth();
+
+        // Sets the texture
         texture.bind(0);
-        
         shader.bind_program();
         shader.set_uniform_texture("ourTexture", 0);
         
@@ -119,6 +125,20 @@ fn main() {
         shader.set_uniform_matrix_4fv("model", model.to_cols_array().as_ref());
         
         // Draw the texture
+        window.render_mesh(&mesh);
+
+        // Unbinds the render texture and sets the default viewport size
+        render_texture.unbind();
+        window.update_viewport(800, 600);
+
+        // Clears the default viewports color and depth buffers
+        window.clear_color(Vec3::new(0.1, 0.1, 0.1));
+        window.clear_depth();
+
+        // Sets the render textures color texture as the cubes texture
+        render_texture.texture().bind(0);
+        shader.set_uniform_texture("ourTexture", 0);
+
         window.render_mesh(&mesh);
         
         shader.unbind_program();

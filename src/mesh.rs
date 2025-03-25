@@ -45,10 +45,7 @@ impl Mesh {
     }
 
     /// Adds a vertex attribute to the mesh.
-    pub fn add_vertex_attributes(
-        &self,
-        attributes: &[(u32, i32, GLenum, bool)],
-    ) {
+    pub fn add_vertex_attributes(&self, attributes: &[(u32, i32, GLenum, bool)]) {
         unsafe {
             gl::BindVertexArray(self.vertex_array);
             gl::BindBuffer(gl::ARRAY_BUFFER, self.vertex_buffer);

@@ -9,8 +9,8 @@ use std::ptr;
 /// Represents an OpenGL texture.
 pub struct Texture {
     pub(crate) id: GLuint,
-    width: u32,
-    height: u32,
+    pub(crate) width: u32,
+    pub(crate) height: u32,
 }
 
 impl Texture {

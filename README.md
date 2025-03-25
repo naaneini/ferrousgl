@@ -13,6 +13,7 @@ The library is designed to be simple-to-use while providing enough flexibility f
 
 <img src="./screenshots/colored_pyramid.png" alt="A colored pyramid" title="A colored pyramid" width="300">
 <img src="./screenshots/textured_cube.png" alt="A wood textured cube" title="A wood textured cube" width="300">
+<img src="./screenshots/offscreen_rendering.png" alt="A rotating cube showcasing offscreen rendering." title="A rotating cube showcasing offscreen rendering." width="300">
 
 ## Example use cases
 - Graphical applications such as drawing apps

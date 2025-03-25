@@ -78,14 +78,10 @@ fn main() {
         Vec3::new(0.0, 1.0, 0.0),
     );
     
-    let mut rotation = 0.0f32;
-    
     while !window.should_window_close() {
         window.clear_color(Vec3::new(0.0, 0.30, 0.0));
         window.clear_depth();
-        
-        rotation += 0.01;
-        let model = Mat4::from_rotation_y(rotation);
+        let model = Mat4::from_rotation_y(window.get_mouse_position().0 as f32 * 0.01);
         
         shader.bind_program();
         
@@ -95,7 +91,7 @@ fn main() {
         shader.set_uniform_matrix_4fv("model", model.to_cols_array().as_ref());
         
         // Draw the mesh
-        window.draw_mesh(&mesh);
+        window.render_mesh(&mesh);
         
         shader.unbind_program();
         

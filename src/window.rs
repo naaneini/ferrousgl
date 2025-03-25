@@ -1,12 +1,12 @@
 extern crate gl;
-extern crate glfw;
 extern crate glam;
+extern crate glfw;
 
-use std::ptr;
 use std::collections::HashSet;
+use std::ptr;
 
-use glfw::{fail_on_errors, Context, Key, WindowEvent};
 use glam::{bool, Vec3};
+use glfw::{fail_on_errors, Context, Key, WindowEvent};
 use std::time::{Duration, Instant};
 
 use crate::Mesh;
@@ -29,12 +29,14 @@ impl GlWindow {
     /// Creates a new OpenGL window with the specified width, height, and title.
     pub fn new(width: u32, height: u32, title: &str, decorated: bool, target_fps: u32) -> Self {
         let mut glfw = glfw::init(fail_on_errors!()).unwrap();
-    
+
         glfw.window_hint(glfw::WindowHint::ContextVersion(3, 3));
-        glfw.window_hint(glfw::WindowHint::OpenGlProfile(glfw::OpenGlProfileHint::Core));
+        glfw.window_hint(glfw::WindowHint::OpenGlProfile(
+            glfw::OpenGlProfileHint::Core,
+        ));
         glfw.window_hint(glfw::WindowHint::Decorated(decorated));
         glfw.window_hint(glfw::WindowHint::DoubleBuffer(true));
-    
+
         let (mut window, events) = glfw
             .create_window(width, height, title, glfw::WindowMode::Windowed)
             .expect("Failed to create GLFW window");
@@ -44,14 +46,14 @@ impl GlWindow {
         window.set_key_polling(true);
         window.set_char_polling(true);
         window.set_scroll_polling(true);
-    
+
         gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
-    
+
         unsafe {
             gl::Enable(gl::DEPTH_TEST);
             gl::Viewport(0, 0, width as i32, height as i32);
         }
-    
+
         GlWindow {
             glfw,
             window,
@@ -203,14 +205,15 @@ impl GlWindow {
         self.last_frame_time = Instant::now();
     }
 
-    /// Updates the OpenGL viewport to match the new window size.
-    fn update_viewport(&self, width: i32, height: i32) {
+    /// Updates the OpenGL viewport to match a new window size. This function typically only needs to be used after a 
+    /// render texture (or offscreen texture) that has a different size than the window is unbound.
+    pub fn update_viewport(&self, width: i32, height: i32) {
         unsafe {
             gl::Viewport(0, 0, width, height);
         }
     }
 
-    /// Clears the screen with the specified color.
+    /// Clears the current bound color buffer with the specified color.
     pub fn clear_color(&self, color: Vec3) {
         unsafe {
             gl::ClearColor(color.x, color.y, color.z, 1.0);
@@ -218,15 +221,15 @@ impl GlWindow {
         }
     }
 
-    /// Clears the depth buffer.
+    /// Clears the current bound depth buffer.
     pub fn clear_depth(&self) {
         unsafe {
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         }
     }
 
-    /// Draws a mesh using the provided shader and vertex data.
-    pub fn draw_mesh(&self, mesh: &Mesh) {
+    /// Renders a mesh using the provided shader and vertex data onto the current bound framebuffer.
+    pub fn render_mesh(&self, mesh: &Mesh) {
         unsafe {
             match self.rendering_type {
                 RenderingType::Solid => {
