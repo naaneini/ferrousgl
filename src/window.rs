@@ -98,6 +98,16 @@ impl GlWindow {
         self.rendering_type = rendering_type;
     }
 
+    /// Get the current clipboard string.
+    pub fn get_clipboard(&mut self) -> Option<String> {
+        self.window.get_clipboard_string()
+    }
+
+    /// Set a new clipboard string.
+    pub fn set_clipboard(&mut self, new_data: &str) {
+        self.window.set_clipboard_string(new_data);
+    }
+
     /// Returns the windows size.
     pub fn get_window_size(&self) -> (i32, i32) {
         self.window.get_size()
