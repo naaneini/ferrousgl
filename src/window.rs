@@ -118,6 +118,11 @@ impl GlWindow {
         self.window.get_pos()
     }
 
+    /// Set the mouse position.
+    pub fn set_mouse_position(&mut self, x: f64, y: f64) {
+        self.window.set_cursor_pos(x, y);
+    }
+
     /// Returns the mouse position.
     pub fn get_mouse_position(&self) -> (f64, f64) {
         self.window.get_cursor_pos()
