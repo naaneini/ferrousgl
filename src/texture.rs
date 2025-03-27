@@ -110,6 +110,19 @@ impl Texture {
         }
     }
 
+    /// Allows the user to enable the mipmap mode.
+    pub fn enable_mipmap_mode(&self, enable_mipmaps: bool) {
+        unsafe {
+            Texture::bind(&self, 0);
+            if enable_mipmaps {
+                gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR_MIPMAP_LINEAR as i32);
+            } else {
+                gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32);
+            }
+            Texture::unbind(&self);
+        }
+    }
+
     /// Returns the width of the texture.
     pub fn width(&self) -> u32 {
         self.width
