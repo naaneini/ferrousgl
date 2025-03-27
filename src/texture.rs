@@ -110,8 +110,8 @@ impl Texture {
         }
     }
 
-    /// Allows the user to enable the mipmap mode.
-    pub fn enable_mipmap_mode(&self, enable_mipmaps: bool) {
+    /// Enables or disables mipmaps. Default is false.
+    pub fn enable_mipmaps(&self, enable_mipmaps: bool) {
         unsafe {
             Texture::bind(&self, 0);
             if enable_mipmaps {
