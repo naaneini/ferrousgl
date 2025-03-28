@@ -3,13 +3,15 @@ FerrousGL is a simple-to-use Rust library that provides simple abstractions over
 
 The library is very simple-to-use: First you can make a window. This window serves as the foundation for rendering meshes (on the main framebuffer or a custom render texture), shaders and input.
 
+> ⚠️ **Version Warning**: This project is currently in early development, so versions below `0.1.0` may not be backwards compatible to older beta versions.
+
 ## Key features
 - **Windows**: Windows are like modular bricks of a foundation, the library allows for simultaneous creation & deletion of windows and input! This allows for simple multi-window applications or debug views!
 - **Meshes**: Meshes are simple-to-use and allow for custom vertex attributes.
 - **Shaders**: You can load shaders from files or from code. There is support for uniforms and textures.
 - **Textures**: The textures allow you to load images to use in shaders and there are also render textures for rendering to an off screen buffer!
 
-The library is designed to be simple-to-use while providing enough flexibility for most graphics programming tasks. It handles much of the boilerplate OpenGL code while exposing many things needed for 2D/3D rendering.
+> The library is designed to be simple-to-use while providing enough flexibility for most graphics programming tasks. It handles much of the boilerplate OpenGL code while exposing many things needed for 2D/3D rendering.
 
 <img src="./screenshots/colored_pyramid.png" alt="A colored pyramid" title="A colored pyramid" width="300">
 <img src="./screenshots/textured_cube.png" alt="A wood textured cube" title="A wood textured cube" width="300">
