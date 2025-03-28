@@ -110,16 +110,20 @@ impl Texture {
         }
     }
 
-    /// Enables or disables mipmaps. Default is false.
-    pub fn enable_mipmaps(&self, enable_mipmaps: bool) {
+    /// Sets the preferred Mipmap Type such as None, Linear and Nearest.
+    pub fn set_mipmap_type(&self, mipmap_type: MipmapType) {
         unsafe {
-            Texture::bind(&self, 0);
-            if enable_mipmaps {
-                gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR_MIPMAP_LINEAR as i32);
-            } else {
-                gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32);
+            match mipmap_type {
+                MipmapType::None => {
+                    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32);
+                }
+                MipmapType::Linear => {
+                    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR_MIPMAP_LINEAR as i32);
+                }
+                MipmapType::Nearest => {
+                    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR_MIPMAP_NEAREST as i32);
+                }
             }
-            Texture::unbind(&self);
         }
     }
 
@@ -141,4 +145,10 @@ impl Drop for Texture {
             gl::DeleteTextures(1, &self.id);
         }
     }
+}
+
+pub enum MipmapType {
+    None,
+    Linear,
+    Nearest
 }
