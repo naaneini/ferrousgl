@@ -1,4 +1,4 @@
-use ferrousgl::{window::WindowConfig, GlWindow, Mesh, Shader};
+use ferrousgl::{WindowConfig, GlWindow, Mesh, Shader};
 use glam::{Vec3, Mat4};
 
 fn main() {
