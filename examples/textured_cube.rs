@@ -1,9 +1,15 @@
-use ferrousgl::{GlWindow, Mesh, Shader, Texture};
+use ferrousgl::{window::WindowConfig, GlWindow, Mesh, Shader, Texture};
 use glam::{Vec3, Mat4};
 
 fn main() {
-    // Create a 800x600 window with 60fps
-    let mut window = GlWindow::new(800, 600, "Textured cube", true, 60);
+    // Create a 800x600 window
+    let mut window = GlWindow::new(
+    WindowConfig {
+        width: 800,
+        height: 600,
+        title: "Textured Cube".to_owned(),
+        ..Default::default()
+    });
     
     let vertex_shader = r#"
         #version 330 core

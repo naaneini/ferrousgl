@@ -27,18 +27,19 @@ pub struct GlWindow {
 
 impl GlWindow {
     /// Creates a new OpenGL window with the specified width, height, and title.
-    pub fn new(width: u32, height: u32, title: &str, decorated: bool, target_fps: u32) -> Self {
+    pub fn new(config: WindowConfig) -> Self {
         let mut glfw = glfw::init(fail_on_errors!()).unwrap();
 
         glfw.window_hint(glfw::WindowHint::ContextVersion(3, 3));
         glfw.window_hint(glfw::WindowHint::OpenGlProfile(
             glfw::OpenGlProfileHint::Core,
         ));
-        glfw.window_hint(glfw::WindowHint::Decorated(decorated));
+        glfw.window_hint(glfw::WindowHint::Decorated(config.decorated));
+        glfw.window_hint(glfw::WindowHint::Resizable(config.resizeable));
         glfw.window_hint(glfw::WindowHint::DoubleBuffer(true));
 
         let (mut window, events) = glfw
-            .create_window(width, height, title, glfw::WindowMode::Windowed)
+            .create_window(config.width, config.height, &config.title, glfw::WindowMode::Windowed)
             .expect("Failed to create GLFW window");
 
         window.make_current();
@@ -51,14 +52,14 @@ impl GlWindow {
 
         unsafe {
             gl::Enable(gl::DEPTH_TEST);
-            gl::Viewport(0, 0, width as i32, height as i32);
+            gl::Viewport(0, 0, config.width as i32, config.height as i32);
         }
 
         GlWindow {
             glfw,
             window,
             events,
-            target_frame_time: Duration::from_secs(1) / target_fps,
+            target_frame_time: Duration::from_secs(1) / config.target_framerate,
             last_frame_time: Instant::now(),
             rendering_type: RenderingType::Solid,
             mouse_wheel_delta: (0.0, 0.0),
@@ -272,6 +273,31 @@ impl GlWindow {
     }
 }
 
+/// Struct to more easily allow setting window features.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct WindowConfig {
+    pub width: u32,
+    pub height: u32,
+    pub title: String,
+    pub decorated: bool,
+    pub resizeable: bool,
+    pub target_framerate: u32,
+}
+
+impl Default for WindowConfig {
+    fn default() -> Self {
+        Self {
+            width: 800,
+            height: 600,
+            title: String::from("Windowed FerrousGL Application"),
+            decorated: true,
+            resizeable: true,
+            target_framerate: 60,
+        }
+    }
+}
+
+/// Enum storing all different rendering types.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RenderingType {
     Solid,

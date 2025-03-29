@@ -110,7 +110,7 @@ impl Texture {
         }
     }
 
-    /// Sets the preferred Mipmap Type such as None, Linear and Nearest.
+    /// Sets the preferred Mipmap Type such as None, Linear and Nearest. Do this after binding a texture, otherwise it will not take effect.
     pub fn set_mipmap_type(&self, mipmap_type: MipmapType) {
         unsafe {
             match mipmap_type {
@@ -147,6 +147,7 @@ impl Drop for Texture {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MipmapType {
     None,
     Linear,

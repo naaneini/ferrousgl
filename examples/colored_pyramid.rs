@@ -1,9 +1,14 @@
-use ferrousgl::{GlWindow, Mesh, Shader};
+use ferrousgl::{window::WindowConfig, GlWindow, Mesh, Shader};
 use glam::{Vec3, Mat4};
 
 fn main() {
-    // Create a 800x600 window with 60 fps
-    let mut window = GlWindow::new(800, 600, "Colored Triangle", true, 60);
+    // Create a 800x600 window
+    let mut window = GlWindow::new(WindowConfig {
+        width: 800,
+        height: 600,
+        title: "Colored Pyramid".to_owned(),
+        ..Default::default()
+    });
     
     let vertex_shader = r#"
         #version 330 core
@@ -43,8 +48,8 @@ fn main() {
         
         // Base vertices (square)
         0.5, -0.5,  0.5,     0.0, 1.0, 0.0,  // green - front right
-    -0.5, -0.5,  0.5,     0.0, 0.0, 1.0,  // blue - front left
-    -0.5, -0.5, -0.5,     1.0, 1.0, 0.0,  // yellow - back left
+        -0.5, -0.5,  0.5,     0.0, 0.0, 1.0,  // blue - front left
+        -0.5, -0.5, -0.5,     1.0, 1.0, 0.0,  // yellow - back left
         0.5, -0.5, -0.5,     1.0, 0.0, 1.0,  // purple - back right
     ];
 
