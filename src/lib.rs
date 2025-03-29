@@ -7,6 +7,7 @@ pub mod render_texture;
 pub use window::GlWindow;
 pub use window::RenderingType;
 pub use window::WindowKey;
+pub use window::WindowConfig;
 pub use mesh::Mesh;
 pub use shader::Shader;
 pub use texture::Texture;
