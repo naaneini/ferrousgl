@@ -11,4 +11,5 @@ pub use window::WindowConfig;
 pub use mesh::Mesh;
 pub use shader::Shader;
 pub use texture::Texture;
+pub use texture::MipmapType;
 pub use render_texture::RenderTexture;
