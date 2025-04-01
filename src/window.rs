@@ -99,6 +99,20 @@ impl GlWindow {
         self.rendering_type = rendering_type;
     }
 
+    pub fn set_depth_testing(&self, depth_func: DepthFunc) {
+        unsafe {
+            match depth_func.into() {
+                Some(gl_func) => {
+                    gl::Enable(gl::DEPTH_TEST);
+                    gl::DepthFunc(gl_func);
+                }
+                None => {
+                    gl::Disable(gl::DEPTH_TEST);
+                }
+            }
+        }
+    }
+
     /// Get the current clipboard string.
     pub fn get_clipboard(&mut self) -> Option<String> {
         self.window.get_clipboard_string()
@@ -293,6 +307,36 @@ impl Default for WindowConfig {
             decorated: true,
             resizeable: true,
             target_framerate: 60,
+        }
+    }
+}
+
+/// Enum representing different depth testing functions.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DepthFunc {
+    None,
+    Never,
+    Less,
+    Equal,
+    LessOrEqual,
+    Greater,
+    NotEqual,
+    GreaterOrEqual,
+    Always,
+}
+
+impl From<DepthFunc> for Option<gl::types::GLenum> {
+    fn from(func: DepthFunc) -> Self {
+        match func {
+            DepthFunc::None => None,
+            DepthFunc::Never => Some(gl::NEVER),
+            DepthFunc::Less => Some(gl::LESS),
+            DepthFunc::Equal => Some(gl::EQUAL),
+            DepthFunc::LessOrEqual => Some(gl::LEQUAL),
+            DepthFunc::Greater => Some(gl::GREATER),
+            DepthFunc::NotEqual => Some(gl::NOTEQUAL),
+            DepthFunc::GreaterOrEqual => Some(gl::GEQUAL),
+            DepthFunc::Always => Some(gl::ALWAYS),
         }
     }
 }
