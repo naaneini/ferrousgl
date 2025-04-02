@@ -99,7 +99,8 @@ impl GlWindow {
         self.rendering_type = rendering_type;
     }
 
-    pub fn set_depth_testing(&self, depth_func: DepthFunc) {
+    /// Set the preferred Depth Type.
+    pub fn set_depth_testing(&self, depth_func: DepthType) {
         unsafe {
             match depth_func.into() {
                 Some(gl_func) => {
@@ -313,7 +314,7 @@ impl Default for WindowConfig {
 
 /// Enum representing different depth testing functions.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum DepthFunc {
+pub enum DepthType {
     None,
     Never,
     Less,
@@ -325,18 +326,18 @@ pub enum DepthFunc {
     Always,
 }
 
-impl From<DepthFunc> for Option<gl::types::GLenum> {
-    fn from(func: DepthFunc) -> Self {
+impl From<DepthType> for Option<gl::types::GLenum> {
+    fn from(func: DepthType) -> Self {
         match func {
-            DepthFunc::None => None,
-            DepthFunc::Never => Some(gl::NEVER),
-            DepthFunc::Less => Some(gl::LESS),
-            DepthFunc::Equal => Some(gl::EQUAL),
-            DepthFunc::LessOrEqual => Some(gl::LEQUAL),
-            DepthFunc::Greater => Some(gl::GREATER),
-            DepthFunc::NotEqual => Some(gl::NOTEQUAL),
-            DepthFunc::GreaterOrEqual => Some(gl::GEQUAL),
-            DepthFunc::Always => Some(gl::ALWAYS),
+            DepthType::None => None,
+            DepthType::Never => Some(gl::NEVER),
+            DepthType::Less => Some(gl::LESS),
+            DepthType::Equal => Some(gl::EQUAL),
+            DepthType::LessOrEqual => Some(gl::LEQUAL),
+            DepthType::Greater => Some(gl::GREATER),
+            DepthType::NotEqual => Some(gl::NOTEQUAL),
+            DepthType::GreaterOrEqual => Some(gl::GEQUAL),
+            DepthType::Always => Some(gl::ALWAYS),
         }
     }
 }
