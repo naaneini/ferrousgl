@@ -1,5 +1,6 @@
 use ferrousgl::{WindowConfig, GlWindow, Mesh, Shader, Texture};
 use glam::{Vec3, Mat4};
+use std::path::Path;
 
 fn main() {
     // Create a 800x600 window
@@ -11,34 +12,10 @@ fn main() {
         ..Default::default()
     });
     
-    let vertex_shader = r#"
-        #version 330 core
-        layout (location = 0) in vec3 aPos;
-        layout (location = 1) in vec2 aTexCoord;
-        
-        out vec2 TexCoord;
-        
-        uniform mat4 model;
-        uniform mat4 view;
-        uniform mat4 projection;
-        
-        void main() {
-            gl_Position = projection * view * model * vec4(aPos, 1.0);
-            TexCoord = aTexCoord;
-        }
-    "#;
-    
-    let fragment_shader = r#"
-        #version 330 core
-        in vec2 TexCoord;
-        out vec4 FragColor;
-        uniform sampler2D ourTexture;
-        void main() {
-            FragColor = texture(ourTexture, TexCoord);
-        }
-    "#;
-    
-    let shader = Shader::new_from_source(vertex_shader, fragment_shader);
+    let shader = Shader::new_from_file(
+        Path::new("./examples/shaders/textured_cube/vertex.glsl"),
+        Path::new("./examples/shaders/textured_cube/fragment.glsl"),
+    ).unwrap();
     
     let texture = Texture::new_from_file("examples/assets/wood_texture.png").unwrap();
     
@@ -124,7 +101,7 @@ fn main() {
         shader.set_uniform_matrix_4fv("view", view.to_cols_array().as_ref());
         shader.set_uniform_matrix_4fv("model", model.to_cols_array().as_ref());
         
-        // Draw the texture
+        // Draw the textured cube
         window.render_mesh(&mesh);
         
         shader.unbind_program();
