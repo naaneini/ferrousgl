@@ -16,6 +16,7 @@ The library is very simple-to-use: First you can make a window. This window serv
 <img src="./screenshots/colored_pyramid.png" alt="A colored pyramid" title="A colored pyramid" width="300">
 <img src="./screenshots/textured_cube.png" alt="A wood textured cube" title="A wood textured cube" width="300">
 <img src="./screenshots/offscreen_rendering.png" alt="A rotating cube showcasing offscreen rendering." title="A rotating cube showcasing offscreen rendering." width="300">
+<img src="./screenshots/simple_water.png" alt="Animated simple water" title="Animated simple water" width="300">
 
 ## Example use cases
 - Graphical applications such as drawing apps
