@@ -1,1 +1,1 @@
-examples/shaders/**/*.glsl    linguist-language=GLSL linguist-detectable=true
+examples/** linguist-documentation=false
