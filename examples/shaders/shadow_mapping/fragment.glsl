@@ -14,8 +14,7 @@ uniform int shadowBlurKernelSize;
 uniform vec3 lightColor;
 uniform vec3 ambientColor;
 
-float ShadowCalculation(vec4 fragPosLightSpace)
-{
+float ShadowCalculation(vec4 fragPosLightSpace) {
     // Perform perspective divide
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     // Transform to [0,1] range

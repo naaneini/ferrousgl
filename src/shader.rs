@@ -33,16 +33,16 @@ impl Shader {
     /// After this it is ready to be used for rendering.
     pub fn new_from_file(vertex_path: &Path, fragment_path: &Path) -> Result<Self, String> {
         let mut vertex_file = File::open(vertex_path)
-            .map_err(|e| format!("Failed to open vertex shader file: {}", e))?;
+            .map_err(|e| format!("[FerrousGl Error] Failed to open vertex shader file: {}", e))?;
         let mut vertex_source = String::new();
         vertex_file.read_to_string(&mut vertex_source)
-            .map_err(|e| format!("Failed to read vertex shader file: {}", e))?;
+            .map_err(|e| format!("[FerrousGl Error] Failed to read vertex shader file: {}", e))?;
 
         let mut fragment_file = File::open(fragment_path)
-            .map_err(|e| format!("Failed to open fragment shader file: {}", e))?;
+            .map_err(|e| format!("[FerrousGl Error] Failed to open fragment shader file: {}", e))?;
         let mut fragment_source = String::new();
         fragment_file.read_to_string(&mut fragment_source)
-            .map_err(|e| format!("Failed to read fragment shader file: {}", e))?;
+            .map_err(|e| format!("[FerrousGl Error] Failed to read fragment shader file: {}", e))?;
 
         Ok(Self::new_from_source(&vertex_source, &fragment_source))
     }

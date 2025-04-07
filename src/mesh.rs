@@ -56,7 +56,7 @@ impl Mesh {
                         gl::FLOAT => std::mem::size_of::<f32>(),
                         gl::UNSIGNED_INT => std::mem::size_of::<u32>(),
                         gl::UNSIGNED_BYTE => std::mem::size_of::<u8>(),
-                        _ => panic!("Unsupported attribute type"),
+                        _ => panic!("[FerrousGl Error] Unsupported attribute type"),
                     }
             });
 
@@ -66,7 +66,7 @@ impl Mesh {
                     gl::FLOAT => std::mem::size_of::<f32>(),
                     gl::UNSIGNED_INT => std::mem::size_of::<u32>(),
                     gl::UNSIGNED_BYTE => std::mem::size_of::<u8>(),
-                    _ => panic!("Unsupported attribute type"),
+                    _ => panic!("[FerrousGl Error] Unsupported attribute type"),
                 };
 
                 gl::EnableVertexAttribArray(index);

@@ -37,10 +37,16 @@ impl GlWindow {
         glfw.window_hint(glfw::WindowHint::Decorated(config.decorated));
         glfw.window_hint(glfw::WindowHint::Resizable(config.resizeable));
         glfw.window_hint(glfw::WindowHint::DoubleBuffer(true));
+        glfw.window_hint(glfw::WindowHint::Samples(Some(4)));
 
         let (mut window, events) = glfw
-            .create_window(config.width, config.height, &config.title, glfw::WindowMode::Windowed)
-            .expect("Failed to create GLFW window");
+            .create_window(
+                config.width,
+                config.height,
+                &config.title,
+                glfw::WindowMode::Windowed,
+            )
+            .expect("[FerrousGl Error] Failed to create GLFW window.");
 
         window.make_current();
         window.set_framebuffer_size_polling(true);
@@ -53,7 +59,18 @@ impl GlWindow {
 
         unsafe {
             gl::Enable(gl::DEPTH_TEST);
+            gl::Enable(gl::MULTISAMPLE);
             gl::Viewport(0, 0, config.width as i32, config.height as i32);
+        }
+
+        let actual_samples = unsafe {
+            let mut samples = 0;
+            gl::GetIntegerv(gl::SAMPLES, &mut samples);
+            samples
+        };
+
+        if actual_samples == 0 {
+            println!("[FerrousGl Error] MSAA Configuration has failed. This is likely a problem with your nvidia driver.\nYou can change the problematic setting by going into NVIDIA Control Panel > Manage 3D Settings and clicking restore.");
         }
 
         GlWindow {
@@ -237,7 +254,7 @@ impl GlWindow {
         self.last_frame_time = Instant::now();
     }
 
-    /// Updates the OpenGL viewport to match a new window size. This function typically only needs to be used after a 
+    /// Updates the OpenGL viewport to match a new window size. This function typically only needs to be used after a
     /// render texture (or offscreen texture) that has a different size than the window is unbound.
     pub fn update_viewport(&self, width: i32, height: i32) {
         unsafe {
@@ -305,7 +322,7 @@ impl Default for WindowConfig {
         Self {
             width: 800,
             height: 600,
-            title: String::from("Windowed FerrousGL Application"),
+            title: String::from("FerrousGL Application"),
             decorated: true,
             resizeable: true,
             target_framerate: 60,

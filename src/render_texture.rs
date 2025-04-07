@@ -47,7 +47,7 @@ impl RenderTexture {
             }
 
             if gl::CheckFramebufferStatus(gl::FRAMEBUFFER) != gl::FRAMEBUFFER_COMPLETE {
-                return Err("Framebuffer is not complete!".to_string());
+                return Err("[FerrousGl Error] Framebuffer is not complete!".to_string());
             }
 
             gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
