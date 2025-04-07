@@ -47,6 +47,7 @@ impl GlWindow {
         window.set_key_polling(true);
         window.set_char_polling(true);
         window.set_scroll_polling(true);
+        window.glfw.set_swap_interval(glfw::SwapInterval::None);
 
         gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
 

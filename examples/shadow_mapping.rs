@@ -1,6 +1,6 @@
 use ferrousgl::{DepthType, GlWindow, Mesh, MipmapType, RenderTexture, Shader, Texture, WindowConfig};
 use glam::{Vec3, Mat4};
-use std::path::Path;
+use std::{path::Path, time::Instant};
 
 fn main() {
     // Window setup
@@ -8,6 +8,7 @@ fn main() {
         width: 800,
         height: 600,
         title: "Shadow Mapping Example".to_owned(),
+        target_framerate: 144,
         ..Default::default()
     });
     
@@ -36,7 +37,7 @@ fn main() {
     floor_texture.bind(0);
     floor_texture.set_mipmap_type(MipmapType::Linear);
 
-    let depth_texture = RenderTexture::new(4096, 4096, true).unwrap();
+    let depth_texture = RenderTexture::new(2048, 2048, true).unwrap();
 
     // Meshes
     let mut quad_mesh = Mesh::new();
@@ -44,9 +45,9 @@ fn main() {
     let quad_vertices = [
         // positions   // texture coords
         -1.0, -1.0,   0.0, 0.0,  // bottom-left
-        -0.75, -1.0,   1.0, 0.0,  // bottom-right
-        -0.75, -0.75,   1.0, 1.0,  // top-right
-        -1.0, -0.75,   0.0, 1.0   // top-left
+        -0.25, -1.0,   1.0, 0.0,  // bottom-right
+        -0.25, -0.25,   1.0, 1.0,  // top-right
+        -1.0, -0.25,   0.0, 1.0   // top-left
     ];
 
     let quad_indices = [0, 1, 3, 1, 2, 3];
@@ -124,9 +125,22 @@ fn main() {
 
     let mut y_rotation = 0.0f32;
     let mut x_rotation = 0.0f32;
+
+    let mut previous_frame_time = Instant::now();
     
     // Main render loop
     while !window.should_window_close() {
+        let current_frame_time = Instant::now();
+        let frame_time = current_frame_time.duration_since(previous_frame_time);
+        previous_frame_time = current_frame_time;
+
+        let frame_time_secs = frame_time.as_secs_f32();
+
+        println!("Frame time: {:.6} seconds", frame_time_secs);
+
+        let fps = 1.0 / frame_time_secs;
+        println!("FPS: {:.0}", fps); // Prints "FPS: 100"
+
         window.clear_color(Vec3::new(0.2, 0.3, 0.3));
         window.clear_depth();
         window.set_depth_testing(DepthType::LessOrEqual);
@@ -181,6 +195,9 @@ fn main() {
             (ortho_projection * light_view).to_cols_array().as_ref());
         shader.set_uniform_3f("lightPos", light_pos.x, light_pos.y, light_pos.z);
         shader.set_uniform_3f("viewPos", camera_pos.x, camera_pos.y, camera_pos.z);
+        shader.set_uniform_1i("shadowBlurKernelSize", 4);
+        shader.set_uniform_3f("lightColor", 1.0, 1.0, 1.0);
+        shader.set_uniform_3f("ambientColor", 0.8, 0.85, 0.95);
         window.render_mesh(&floor_mesh);
         
         // Draw cube with shadows
