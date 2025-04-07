@@ -217,7 +217,7 @@ fn main() {
         depth_texture.depth_texture().unwrap().bind(0);
         quad_shader.set_uniform_texture("screenTexture", 0);
         window.set_depth_testing(DepthType::None);
-        window.render_mesh(&quad_mesh);
+        //window.render_mesh(&quad_mesh);
         depth_texture.depth_texture().unwrap().unbind();
         
         window.update();
