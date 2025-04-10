@@ -19,7 +19,7 @@ glfw = "0.59.0"
 glam = "0.30.1"
 glm = "0.2.3"
 image = "0.25.6"
-noise = "0.9.0"
+rusttype = "0.9.3"
 
 [package.metadata.docs.rs]
 all-features = true
