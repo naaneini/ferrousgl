@@ -132,6 +132,43 @@ impl GlWindow {
         }
     }
 
+    /// Set the preferred Blending Mode.
+    pub fn set_blend_mode(&self, blend_mode: BlendMode) {
+        unsafe {
+            match blend_mode {
+                BlendMode::None => {
+                    gl::Disable(gl::BLEND);
+                }
+                BlendMode::Alpha => {
+                    gl::Enable(gl::BLEND);
+                    gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
+                }
+                BlendMode::Additive => {
+                    gl::Enable(gl::BLEND);
+                    gl::BlendFunc(gl::SRC_ALPHA, gl::ONE);
+                }
+                BlendMode::Multiplicative => {
+                    gl::Enable(gl::BLEND);
+                    gl::BlendFunc(gl::DST_COLOR, gl::ZERO);
+                }
+                BlendMode::Custom {
+                    src_rgb,
+                    dst_rgb,
+                    src_alpha,
+                    dst_alpha,
+                } => {
+                    gl::Enable(gl::BLEND);
+                    gl::BlendFuncSeparate(
+                        src_rgb.into(),
+                        dst_rgb.into(),
+                        src_alpha.into(),
+                        dst_alpha.into(),
+                    );
+                }
+            }
+        }
+    }
+
     /// Get the current clipboard string.
     pub fn get_clipboard(&mut self) -> Option<String> {
         self.window.get_clipboard_string()
@@ -326,6 +363,63 @@ impl Default for WindowConfig {
             decorated: true,
             resizeable: true,
             target_framerate: 60,
+        }
+    }
+}
+
+/// Enum representing different blending modes for transparency and compositing.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum BlendMode {
+    None,
+    Alpha,
+    Additive,
+    Multiplicative,
+    Custom {
+        src_rgb: BlendFactor,
+        dst_rgb: BlendFactor,
+        src_alpha: BlendFactor,
+        dst_alpha: BlendFactor,
+    },
+}
+
+/// Enum representing OpenGL blend factors.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum BlendFactor {
+    Zero,
+    One,
+    SrcColor,
+    OneMinusSrcColor,
+    DstColor,
+    OneMinusDstColor,
+    SrcAlpha,
+    OneMinusSrcAlpha,
+    DstAlpha,
+    OneMinusDstAlpha,
+    ConstantColor,
+    OneMinusConstantColor,
+    ConstantAlpha,
+    OneMinusConstantAlpha,
+    SrcAlphaSaturate,
+}
+
+impl From<BlendFactor> for gl::types::GLenum {
+    fn from(factor: BlendFactor) -> Self {
+        match factor {
+            BlendFactor::Zero => gl::ZERO,
+            BlendFactor::One => gl::ONE,
+            BlendFactor::SrcColor => gl::SRC_COLOR,
+            BlendFactor::OneMinusSrcColor => gl::ONE_MINUS_SRC_COLOR,
+            BlendFactor::DstColor => gl::DST_COLOR,
+            BlendFactor::OneMinusDstColor => gl::ONE_MINUS_DST_COLOR,
+            BlendFactor::SrcAlpha => gl::SRC_ALPHA,
+            BlendFactor::OneMinusSrcAlpha => gl::ONE_MINUS_SRC_ALPHA,
+            BlendFactor::DstAlpha => gl::DST_ALPHA,
+            BlendFactor::OneMinusDstAlpha => gl::ONE_MINUS_DST_ALPHA,
+            BlendFactor::ConstantColor => gl::CONSTANT_COLOR,
+            BlendFactor::OneMinusConstantColor => gl::ONE_MINUS_CONSTANT_COLOR,
+            BlendFactor::ConstantAlpha => gl::CONSTANT_ALPHA,
+            BlendFactor::OneMinusConstantAlpha => gl::ONE_MINUS_CONSTANT_ALPHA,
+            BlendFactor::SrcAlphaSaturate => gl::SRC_ALPHA_SATURATE,
         }
     }
 }

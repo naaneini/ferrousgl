@@ -27,7 +27,7 @@ void main() {
     vec3 displacedPos = aPos;
     displacedPos.y += waveHeight1 * sin(aPos.x * waveLength1 + time * speed1) *
                      cos(aPos.z * waveLength1 * 0.7 + time * speed1);
-    displacedPos.y += waveHeight2 * sin(aPos.x * waveLength2 * 1.3 + time * speed2 + 1.0) *
+    displacedPos.y -= waveHeight2 * sin(aPos.x * waveLength2 * 1.3 + time * speed2 + 1.0) *
                      cos(aPos.z * waveLength2 * 1.7 + time * speed2 + 2.0);
     displacedPos.y += waveHeight3 * sin(aPos.x * waveLength3 * 2.1 + time * speed3 + 3.0) *
                      cos(aPos.z * waveLength3 * 2.5 + time * speed3 + 4.0);

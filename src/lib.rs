@@ -7,6 +7,8 @@ pub mod render_texture;
 pub use window::GlWindow;
 pub use window::RenderingType;
 pub use window::DepthType;
+pub use window::BlendMode;
+pub use window::BlendFactor;
 pub use window::WindowKey;
 pub use window::WindowConfig;
 pub use mesh::Mesh;
