@@ -1,5 +1,5 @@
 use ferrousgl::{WindowConfig, GlWindow, Mesh, Shader, Texture};
-use glam::{Vec3, Mat4};
+use glam::{Mat4, Vec3, Vec4};
 use std::path::Path;
 
 fn main() {
@@ -83,7 +83,7 @@ fn main() {
     let mut x_rotation = 0.0f32;
     
     while !window.should_window_close() {
-        window.clear_color(Vec3::new(0.2, 0.3, 0.3));
+        window.clear_color(Vec4::new(0.2, 0.3, 0.3, 1.0));
         window.clear_depth();
         
         // Update rotation

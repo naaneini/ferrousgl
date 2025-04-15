@@ -1,5 +1,5 @@
 use ferrousgl::{DepthType, GlWindow, Mesh, MipmapType, RenderTexture, Shader, Texture, WindowConfig};
-use glam::{Vec3, Mat4};
+use glam::{Vec3, Vec4, Mat4};
 use std::{path::Path, time::Instant};
 
 fn main() {
@@ -141,7 +141,7 @@ fn main() {
         let fps = 1.0 / frame_time_secs;
         println!("FPS: {:.0}", fps); // Prints "FPS: 100"
 
-        window.clear_color(Vec3::new(0.2, 0.3, 0.3));
+        window.clear_color(Vec4::new(0.2, 0.3, 0.3, 1.0));
         window.clear_depth();
         window.set_depth_testing(DepthType::LessOrEqual);
 
@@ -150,7 +150,7 @@ fn main() {
 
         // Depth pass
         depth_texture.bind();
-        window.clear_color(Vec3::new(1.0, 1.0, 1.0));
+        window.clear_color(Vec4::new(1.0, 1.0, 1.0, 1.0));
         window.clear_depth();
         
         y_rotation += 0.01;

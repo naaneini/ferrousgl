@@ -1,5 +1,5 @@
 use ferrousgl::{WindowConfig, GlWindow, Mesh, RenderTexture, Shader, Texture};
-use glam::{Vec3, Mat4};
+use glam::{Vec3, Vec4, Mat4};
 use std::path::Path;
 
 fn main() {
@@ -93,7 +93,7 @@ fn main() {
         render_texture.bind();
 
         // Clears the render textures color and depth buffers
-        window.clear_color(Vec3::new(0.0, 0.0, 0.0));
+        window.clear_color(Vec4::new(0.0, 0.0, 0.0, 1.0));
         window.clear_depth();
 
         // Sets the texture
@@ -114,7 +114,7 @@ fn main() {
         window.update_viewport(window.get_window_size().0, window.get_window_size().1);
 
         // Clears the default viewports color and depth buffers
-        window.clear_color(Vec3::new(0.1, 0.1, 0.1));
+        window.clear_color(Vec4::new(0.1, 0.1, 0.1, 1.0));
         window.clear_depth();
 
         // Sets the render textures color texture as the cubes texture

@@ -1,5 +1,5 @@
 use ferrousgl::{BlendMode, GlWindow, Mesh, Shader, Texture, WindowConfig, WindowKey};
-use glam::{Mat4, Vec3};
+use glam::{Mat4, Vec3, Vec4};
 use std::path::Path;
 
 fn main() {
@@ -82,7 +82,7 @@ fn main() {
     window.set_blend_mode(current_blend_mode);
 
     while !window.should_window_close() {
-        window.clear_color(Vec3::new(0.0, 0.5, 0.5));
+        window.clear_color(Vec4::new(0.0, 0.5, 0.5, 1.0));
         window.clear_depth();
 
         // Check for key presses to change blend mode

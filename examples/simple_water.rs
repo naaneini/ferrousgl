@@ -1,5 +1,5 @@
 use ferrousgl::{GlWindow, WindowConfig, WindowKey, Shader, Mesh};
-use glam::{Mat4, Vec3};
+use glam::{Mat4, Vec3, Vec4};
 use std::path::Path;
 
 fn main() {
@@ -131,7 +131,7 @@ fn main() {
             camera_pos.y += 0.1;
         }
 
-        window.clear_color(Vec3::new(0.53, 0.81, 0.92)); // Sky blue background
+        window.clear_color(Vec4::new(0.53, 0.81, 0.92, 1.0)); // Sky blue background
         window.clear_depth();
 
         // Set up matrices

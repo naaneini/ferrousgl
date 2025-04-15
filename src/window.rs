@@ -5,7 +5,7 @@ extern crate glfw;
 use std::collections::HashSet;
 use std::ptr;
 
-use glam::{bool, Vec3};
+use glam::{bool, Vec4};
 use glfw::{fail_on_errors, Context, Key, WindowEvent};
 use std::time::{Duration, Instant};
 
@@ -31,9 +31,8 @@ impl GlWindow {
         let mut glfw = glfw::init(fail_on_errors!()).unwrap();
 
         glfw.window_hint(glfw::WindowHint::ContextVersion(3, 3));
-        glfw.window_hint(glfw::WindowHint::OpenGlProfile(
-            glfw::OpenGlProfileHint::Core,
-        ));
+        glfw.window_hint(glfw::WindowHint::OpenGlProfile(glfw::OpenGlProfileHint::Core));
+        glfw.window_hint(glfw::WindowHint::TransparentFramebuffer(config.transparent_framebuffer));
         glfw.window_hint(glfw::WindowHint::Decorated(config.decorated));
         glfw.window_hint(glfw::WindowHint::Resizable(config.resizeable));
         glfw.window_hint(glfw::WindowHint::DoubleBuffer(true));
@@ -300,9 +299,9 @@ impl GlWindow {
     }
 
     /// Clears the current bound color buffer with the specified color.
-    pub fn clear_color(&self, color: Vec3) {
+    pub fn clear_color(&self, color: Vec4) {
         unsafe {
-            gl::ClearColor(color.x, color.y, color.z, 1.0);
+            gl::ClearColor(color.x, color.y, color.z, color.w);
             gl::Clear(gl::COLOR_BUFFER_BIT);
         }
     }
@@ -352,6 +351,7 @@ pub struct WindowConfig {
     pub decorated: bool,
     pub resizeable: bool,
     pub target_framerate: u32,
+    pub transparent_framebuffer: bool,
 }
 
 impl Default for WindowConfig {
@@ -363,6 +363,7 @@ impl Default for WindowConfig {
             decorated: true,
             resizeable: true,
             target_framerate: 60,
+            transparent_framebuffer: false,
         }
     }
 }
