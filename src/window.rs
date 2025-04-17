@@ -31,12 +31,12 @@ impl GlWindow {
         let mut glfw = glfw::init(fail_on_errors!()).unwrap();
 
         glfw.window_hint(glfw::WindowHint::ContextVersion(3, 3));
-        glfw.window_hint(glfw::WindowHint::OpenGlProfile(glfw::OpenGlProfileHint::Core));
+        glfw.window_hint(glfw::WindowHint::OpenGlProfile(glfw::OpenGlProfileHint::Core));   
         glfw.window_hint(glfw::WindowHint::TransparentFramebuffer(config.transparent_framebuffer));
         glfw.window_hint(glfw::WindowHint::Decorated(config.decorated));
         glfw.window_hint(glfw::WindowHint::Resizable(config.resizeable));
         glfw.window_hint(glfw::WindowHint::DoubleBuffer(true));
-        glfw.window_hint(glfw::WindowHint::Samples(Some(4)));
+        glfw.window_hint(glfw::WindowHint::Samples(Some(config.anti_aliasing)));
 
         let (mut window, events) = glfw
             .create_window(
@@ -352,6 +352,7 @@ pub struct WindowConfig {
     pub resizeable: bool,
     pub target_framerate: u32,
     pub transparent_framebuffer: bool,
+    pub anti_aliasing: u32,
 }
 
 impl Default for WindowConfig {
@@ -364,6 +365,7 @@ impl Default for WindowConfig {
             resizeable: true,
             target_framerate: 60,
             transparent_framebuffer: false,
+            anti_aliasing: 4,
         }
     }
 }
