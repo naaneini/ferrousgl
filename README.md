@@ -18,6 +18,7 @@ The library is very simple-to-use: First you can make a window. This window serv
 <img src="./screenshots/offscreen_rendering.png" alt="A rotating cube showcasing offscreen rendering." title="A rotating cube showcasing offscreen rendering." width="300">
 <img src="./screenshots/simple_water.png" alt="Animated simple water" title="Animated simple water" width="300">
 <img src="./screenshots/shadow_mapping.png" alt="Wooden rotating cube ontop of podest" title="Wooden rotating cube ontop of podest" width="300">
+<img src="./screenshots/blend_mode.png" alt="Example showing blend modes" title="Example showing blend modes" width="300">
 
 ## Example use cases
 - Graphical applications such as drawing apps
