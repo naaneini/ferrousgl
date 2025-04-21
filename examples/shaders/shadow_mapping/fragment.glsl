@@ -31,26 +31,45 @@ float ShadowCalculation(vec4 fragPosLightSpace) {
     vec3 normal = normalize(cross(dFdx(FragPos), dFdy(FragPos)));
     float bias = max(0.05 * (1.0 - dot(normal, normalize(lightPos - FragPos))), 0.005);
     
-    // PCF with dynamic kernel size
-    float shadow = 0.0;
+    // Get texture size for the shadow map
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    
+    // Calculate the exact texel location
+    vec2 shadowTexCoord = projCoords.xy;
+    
+    // PCF with bilinear filtering
+    float shadow = 0.0;
     float weightSum = 0.0;
     
-    for(int x = -shadowBlurKernelSize; x <= shadowBlurKernelSize; ++x)
-    {
-        for(int y = -shadowBlurKernelSize; y <= shadowBlurKernelSize; ++y)
-        {
-            // Gaussian-like weighting (optional)
-            float weight = 1.0 / (1.0 + length(vec2(x,y)));
+    for(int x = -1; x <= 1; ++x) {
+        for(int y = -1; y <= 1; ++y) {
+            // Calculate sample position
+            vec2 samplePos = shadowTexCoord + vec2(x, y) * texelSize;
+            vec2 sampleMapPos = samplePos / texelSize;
             
-            float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-            shadow += (currentDepth - bias > pcfDepth ? 1.0 : 0.0) * weight;        
+            // Get fractional part for bilinear weights
+            vec2 fractPart = fract(sampleMapPos);
+            vec2 floorPart = floor(sampleMapPos);
+            
+            // Sample four texels for bilinear interpolation
+            float tl = texture(shadowMap, (floorPart + vec2(0.0, 1.0)) * texelSize).r;
+            float tr = texture(shadowMap, (floorPart + vec2(1.0, 1.0)) * texelSize).r;
+            float bl = texture(shadowMap, (floorPart + vec2(0.0, 0.0)) * texelSize).r;
+            float br = texture(shadowMap, (floorPart + vec2(1.0, 0.0)) * texelSize).r;
+            
+            // Bilinear interpolation
+            float top = mix(tl, tr, fractPart.x);
+            float bottom = mix(bl, br, fractPart.x);
+            float sampledDepth = mix(bottom, top, fractPart.y);
+            
+            // Gaussian weighting for PCF
+            float weight = exp(-(x*x + y*y) / 2.0);
+            shadow += ((currentDepth - bias > sampledDepth) ? 1.0 : 0.0) * weight;
             weightSum += weight;
-        }    
+        }
     }
-    shadow /= weightSum;
     
-    return shadow;
+    return shadow / weightSum;
 }
 
 void main()
