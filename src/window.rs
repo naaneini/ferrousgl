@@ -20,6 +20,7 @@ pub struct GlWindow {
     last_frame_time: Instant,
     rendering_type: RenderingType,
     mouse_wheel_delta: (f64, f64),
+    last_mouse_position: (f64, f64),
     typed_keys: HashSet<char>,
     pressed_keys: HashSet<WindowKey>,
     previous_pressed_keys: HashSet<WindowKey>,
@@ -80,6 +81,7 @@ impl GlWindow {
             last_frame_time: Instant::now(),
             rendering_type: RenderingType::Solid,
             mouse_wheel_delta: (0.0, 0.0),
+            last_mouse_position: (0.0, 0.0),
             typed_keys: HashSet::new(),
             pressed_keys: HashSet::new(),
             previous_pressed_keys: HashSet::new(),
@@ -222,6 +224,13 @@ impl GlWindow {
         self.window.get_cursor_pos()
     }
 
+    /// Returns the mouse position delta (x, y).
+    pub fn get_mouse_delta(&self) -> (f64, f64) {
+        let (current_x, current_y) = self.get_mouse_position();
+        let (last_x, last_y) = self.last_mouse_position;
+        (current_x - last_x, current_y - last_y)
+    }
+
     /// Returns the mouse wheel delta (x, y).
     pub fn get_mouse_wheel_delta(&self) -> (f64, f64) {
         self.mouse_wheel_delta
@@ -286,6 +295,7 @@ impl GlWindow {
         self.clear_typed_keys();
         self.reset_mouse_wheel_delta();
         self.update_pressed_keys();
+        self.last_mouse_position = self.get_mouse_position();
 
         self.glfw.poll_events();
         for (_, event) in glfw::flush_messages(&self.events) {

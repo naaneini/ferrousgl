@@ -60,7 +60,7 @@ fn main() {
     while !window.should_window_close() {
         window.clear_color(Vec4::new(0.0, 0.30, 0.0, 1.0));
         window.clear_depth();
-        let model = Mat4::from_rotation_y(window.get_mouse_position().0 as f32 * 0.01);
+        let model = Mat4::from_rotation_y(window.get_mouse_delta().0 as f32 * 0.01);
 
         shader.bind_program();
 
