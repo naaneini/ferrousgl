@@ -86,6 +86,31 @@ impl GlWindow {
         }
     }
 
+    pub unsafe fn get_opengl_ver() -> String {
+        std::ffi::CStr::from_ptr(gl::GetString(gl::VERSION) as *const i8)
+            .to_string_lossy()
+            .into_owned()
+    }
+    
+    pub unsafe fn get_glsl_ver() -> String {
+        std::ffi::CStr::from_ptr(gl::GetString(gl::SHADING_LANGUAGE_VERSION) as *const i8)
+            .to_string_lossy()
+            .into_owned()
+    }
+    
+    pub unsafe fn get_vendor() -> String {
+        std::ffi::CStr::from_ptr(gl::GetString(gl::VENDOR) as *const i8)
+            .to_string_lossy()
+            .into_owned()
+    }
+    
+    pub unsafe fn get_renderer() -> String {
+        std::ffi::CStr::from_ptr(gl::GetString(gl::RENDERER) as *const i8)
+            .to_string_lossy()
+            .into_owned()
+    }
+    
+
     /// Returns if the window received a close signal. This allows for "Do you really want to exit?" dialogues for example, or shutting down logic.
     pub fn should_window_close(&self) -> bool {
         self.window.should_close()
