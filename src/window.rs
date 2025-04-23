@@ -238,9 +238,11 @@ impl GlWindow {
         self.typed_keys.iter().cloned().collect()
     }
 
-    // Returns the current frame time.
+    /// Returns the current frame time as microseconds. The frametime will not be impacted by the target framerate.
+    /// This means that if you use this to calculate the FPS, it will show the potential FPS of the application, not the actual FPS.
+    /// The actual FPS are set as a target framerate and will actually limit the FPS of the application.
     pub fn get_frame_time(&self) -> f32 {
-        self.last_frame_time.elapsed().as_secs_f32()
+        self.last_frame_time.elapsed().as_micros() as f32
     }
 
     /// Clears typed keys for the next frame.

@@ -15,7 +15,7 @@ pub struct Texture {
 
 impl Texture {
     /// Creates a new texture from an image file.
-    pub fn new_from_file(path: &str) -> Result<Self, String> {
+    pub fn new_from_file(path: &Path) -> Result<Self, String> {
         let img = image::open(&Path::new(path)).map_err(|e| e.to_string())?;
         Self::from_image(&img)
     }

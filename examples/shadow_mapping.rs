@@ -29,11 +29,11 @@ fn main() {
     ).unwrap();
 
     // Textures
-    let cube_texture = Texture::new_from_file("examples/assets/wood_texture.png").unwrap();
+    let cube_texture = Texture::new_from_file(Path::new("examples/assets/wood_texture.png")).unwrap();
     cube_texture.bind(0);
     cube_texture.set_mipmap_type(MipmapType::Linear);
     
-    let floor_texture = Texture::new_from_file("examples/assets/plank_texture.jpg").unwrap();
+    let floor_texture = Texture::new_from_file(Path::new("examples/assets/plank_texture.jpg")).unwrap();
     floor_texture.bind(0);
     floor_texture.set_mipmap_type(MipmapType::Linear);
 
@@ -140,6 +140,9 @@ fn main() {
 
         let fps = 1.0 / frame_time_secs;
         println!("FPS: {:.0}", fps); // Prints "FPS: 100"
+
+        let fps = 1_000_000.0 / window.get_frame_time() as f64;
+println!("Window reports FPS: {:.2}", fps);
 
         window.clear_color(Vec4::new(0.2, 0.3, 0.3, 1.0));
         window.clear_depth();

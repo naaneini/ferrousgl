@@ -18,7 +18,7 @@ fn main() {
     .unwrap();
 
     // Load a texture with transparency (e.g., PNG with alpha channel)
-    let texture = Texture::new_from_file("examples/assets/transparent_texture.png").unwrap();
+    let texture = Texture::new_from_file(Path::new("examples/assets/transparent_texture.png")).unwrap();
 
     let mut mesh = Mesh::new();
 

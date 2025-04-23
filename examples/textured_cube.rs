@@ -17,7 +17,7 @@ fn main() {
         Path::new("./examples/shaders/textured_cube/fragment.glsl"),
     ).unwrap();
     
-    let texture = Texture::new_from_file("examples/assets/wood_texture.png").unwrap();
+    let texture = Texture::new_from_file(Path::new("examples/assets/wood_texture.png")).unwrap();
     
     let mut mesh = Mesh::new();
     
