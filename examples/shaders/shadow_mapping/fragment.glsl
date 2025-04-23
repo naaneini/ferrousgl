@@ -41,8 +41,8 @@ float ShadowCalculation(vec4 fragPosLightSpace) {
     float shadow = 0.0;
     float weightSum = 0.0;
     
-    for(int x = -1; x <= 1; ++x) {
-        for(int y = -1; y <= 1; ++y) {
+    for(int x = -shadowBlurKernelSize; x <= shadowBlurKernelSize; ++x) {
+        for(int y = -shadowBlurKernelSize; y <= shadowBlurKernelSize; ++y) {
             // Calculate sample position
             vec2 samplePos = shadowTexCoord + vec2(x, y) * texelSize;
             vec2 sampleMapPos = samplePos / texelSize;

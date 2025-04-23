@@ -241,6 +241,7 @@ impl GlWindow {
     /// Returns the current frame time as microseconds. The frametime will not be impacted by the target framerate.
     /// This means that if you use this to calculate the FPS, it will show the potential FPS of the application, not the actual FPS.
     /// The actual FPS are set as a target framerate and will actually limit the FPS of the application.
+    /// Be careful to ONLY call this function before running the update function, if you call it after or before the frame time will be incorrect.
     pub fn get_frame_time(&self) -> f32 {
         self.last_frame_time.elapsed().as_micros() as f32
     }

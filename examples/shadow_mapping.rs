@@ -37,7 +37,7 @@ fn main() {
     floor_texture.bind(0);
     floor_texture.set_mipmap_type(MipmapType::Linear);
 
-    let depth_texture = RenderTexture::new(1024, 1024, true).unwrap();
+    let depth_texture = RenderTexture::new(4096, 4096, true).unwrap();
 
     // Meshes
     let mut quad_mesh = Mesh::new();
@@ -141,8 +141,6 @@ fn main() {
         let fps = 1.0 / frame_time_secs;
         println!("FPS: {:.0}", fps); // Prints "FPS: 100"
 
-        let fps = 1_000_000.0 / window.get_frame_time() as f64;
-println!("Window reports FPS: {:.2}", fps);
 
         window.clear_color(Vec4::new(0.2, 0.3, 0.3, 1.0));
         window.clear_depth();
@@ -198,7 +196,7 @@ println!("Window reports FPS: {:.2}", fps);
             (ortho_projection * light_view).to_cols_array().as_ref());
         shader.set_uniform_3f("lightPos", light_pos.x, light_pos.y, light_pos.z);
         shader.set_uniform_3f("viewPos", camera_pos.x, camera_pos.y, camera_pos.z);
-        shader.set_uniform_1i("shadowBlurKernelSize", 4);
+        shader.set_uniform_1i("shadowBlurKernelSize", 15);
         shader.set_uniform_3f("lightColor", 1.0, 1.0, 1.0);
         shader.set_uniform_3f("ambientColor", 0.8, 0.85, 0.95);
         window.render_mesh(&floor_mesh);
@@ -222,6 +220,9 @@ println!("Window reports FPS: {:.2}", fps);
         window.set_depth_testing(DepthType::None);
         window.render_mesh(&quad_mesh);
         depth_texture.depth_texture().unwrap().unbind();
+
+        let fps = 1_000_000.0 / window.get_frame_time() as f64;
+        println!("Window reports potential FPS: {:.2}", fps);
         
         window.update();
     }
