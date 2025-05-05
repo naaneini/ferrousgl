@@ -196,7 +196,7 @@ fn main() {
             (ortho_projection * light_view).to_cols_array().as_ref());
         shader.set_uniform_3f("lightPos", light_pos.x, light_pos.y, light_pos.z);
         shader.set_uniform_3f("viewPos", camera_pos.x, camera_pos.y, camera_pos.z);
-        shader.set_uniform_1i("shadowBlurKernelSize", 15);
+        shader.set_uniform_1i("shadowBlurKernelSize", 5);
         shader.set_uniform_3f("lightColor", 1.0, 1.0, 1.0);
         shader.set_uniform_3f("ambientColor", 0.8, 0.85, 0.95);
         window.render_mesh(&floor_mesh);
