@@ -272,11 +272,8 @@ impl GlWindow {
     }
 
     /// Returns the current frame time as microseconds. The frametime will not be impacted by the target framerate.
-    /// This means that if you use this to calculate the FPS, it will show the potential FPS of the application, not the actual FPS.
-    /// The actual FPS are set as a target framerate and will actually limit the FPS of the application.
-    /// Be careful to ONLY call this function before running the update function, if you call it after or before the frame time will be incorrect.
     pub fn get_frame_time(&self) -> f32 {
-        self.last_frame_time.elapsed().as_micros() as f32
+        self.last_frame_time.elapsed().as_secs_f32() * 1000.0  // returns milliseconds
     }
 
     /// Clears typed keys for the next frame.
@@ -292,6 +289,8 @@ impl GlWindow {
 
     /// Polls events (user input, system events) and swaps buffers.
     pub fn update(&mut self) {
+        let frame_start = Instant::now();
+        
         self.clear_typed_keys();
         self.reset_mouse_wheel_delta();
         self.update_pressed_keys();
@@ -322,14 +321,15 @@ impl GlWindow {
         }
         self.window.swap_buffers();
 
-        let now = Instant::now();
-        let elapsed = now - self.last_frame_time;
-
-        if elapsed < self.target_frame_time {
-            std::thread::sleep(self.target_frame_time - elapsed);
+        // Calculate frame time and sleep if needed
+        let frame_time = frame_start.elapsed();
+        if frame_time < self.target_frame_time {
+            let sleep_time = self.target_frame_time - frame_time;
+            std::thread::sleep(sleep_time);
         }
 
-        self.last_frame_time = Instant::now();
+        // Update last_frame_time for get_frame_time()
+        self.last_frame_time = frame_start;
     }
 
     /// Updates the OpenGL viewport to match a new window size. This function typically only needs to be used after a

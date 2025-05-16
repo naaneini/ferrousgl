@@ -1,4 +1,4 @@
-use ferrousgl::{DepthType, GlWindow, Mesh, MipmapType, RenderTexture, Shader, Texture, WindowConfig};
+use ferrousgl::{texture::FilterMode, DepthType, GlWindow, Mesh, MipmapType, RenderTexture, Shader, Texture, WindowConfig};
 use glam::{Vec3, Vec4, Mat4};
 use std::{path::Path, time::Instant};
 
@@ -31,13 +31,15 @@ fn main() {
     // Textures
     let cube_texture = Texture::new_from_file(Path::new("examples/assets/wood_texture.png")).unwrap();
     cube_texture.bind(0);
-    cube_texture.set_mipmap_type(MipmapType::Linear);
+    cube_texture.set_mipmap_and_filtering(MipmapType::Linear, FilterMode::Nearest);
     
     let floor_texture = Texture::new_from_file(Path::new("examples/assets/plank_texture.jpg")).unwrap();
     floor_texture.bind(0);
-    floor_texture.set_mipmap_type(MipmapType::Linear);
+    floor_texture.set_mipmap_and_filtering(MipmapType::Linear, FilterMode::Nearest);
 
-    let depth_texture = RenderTexture::new(4096, 4096, true).unwrap();
+    let depth_texture = RenderTexture::new(512, 512, true).unwrap();
+    depth_texture.depth_texture().unwrap().bind(0);
+    depth_texture.depth_texture().unwrap().set_mipmap_and_filtering(MipmapType::None, FilterMode::Linear);
 
     // Meshes
     let mut quad_mesh = Mesh::new();
@@ -196,7 +198,7 @@ fn main() {
             (ortho_projection * light_view).to_cols_array().as_ref());
         shader.set_uniform_3f("lightPos", light_pos.x, light_pos.y, light_pos.z);
         shader.set_uniform_3f("viewPos", camera_pos.x, camera_pos.y, camera_pos.z);
-        shader.set_uniform_1i("shadowBlurKernelSize", 5);
+        shader.set_uniform_1i("shadowBlurKernelSize", 4);
         shader.set_uniform_3f("lightColor", 1.0, 1.0, 1.0);
         shader.set_uniform_3f("ambientColor", 0.8, 0.85, 0.95);
         window.render_mesh(&floor_mesh);

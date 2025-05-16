@@ -8,7 +8,7 @@ fn main() {
     WindowConfig {
         width: 800,
         height: 600,
-        title: "Textured Cube".to_owned(),
+        title: "Textured Cube (Move mouse too see mipmap changes!)".to_owned(),
         ..Default::default()
     });
     
@@ -18,6 +18,8 @@ fn main() {
     ).unwrap();
     
     let texture = Texture::new_from_file(Path::new("examples/assets/wood_texture.png")).unwrap();
+    texture.bind(0);
+    texture.set_mipmap_and_filtering(ferrousgl::MipmapType::Linear, ferrousgl::FilterMode::Nearest);
     
     let mut mesh = Mesh::new();
     
@@ -89,7 +91,7 @@ fn main() {
         // Update rotation
         y_rotation += 0.01;
         x_rotation += 0.005;
-        let model = Mat4::from_rotation_y(y_rotation) * Mat4::from_rotation_x(x_rotation);
+        let model = Mat4::from_translation(Vec3::new(0.0, 0.0, window.get_mouse_position().0 as f32*0.1 as f32)) * Mat4::from_rotation_y(y_rotation) * Mat4::from_rotation_x(x_rotation);
         
         texture.bind(0);
         

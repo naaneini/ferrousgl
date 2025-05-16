@@ -110,18 +110,55 @@ impl Texture {
         }
     }
 
-    /// Sets the preferred Mipmap Type such as None, Linear and Nearest. Do this after binding a texture, otherwise it will not take effect.
-    pub fn set_mipmap_type(&self, mipmap_type: MipmapType) {
+    /// Sets the preferred Texture Mipmap Type or Texture Filtering Mode such as None, Linear and Nearest.
+    /// Do this after binding a texture, otherwise it will not take effect.
+    pub fn set_mipmap_and_filtering(&self, mipmap_type: MipmapType, base_filter: FilterMode) {
         unsafe {
-            match mipmap_type {
-                MipmapType::None => {
+            // Set minification filter based on both mipmap type and base filter
+            match (mipmap_type, base_filter) {
+                (MipmapType::None, FilterMode::Linear) => {
                     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32);
                 }
-                MipmapType::Linear => {
-                    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR_MIPMAP_LINEAR as i32);
+                (MipmapType::None, FilterMode::Nearest) => {
+                    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
                 }
-                MipmapType::Nearest => {
-                    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR_MIPMAP_NEAREST as i32);
+                (MipmapType::Nearest, FilterMode::Linear) => {
+                    gl::TexParameteri(
+                        gl::TEXTURE_2D,
+                        gl::TEXTURE_MIN_FILTER,
+                        gl::NEAREST_MIPMAP_LINEAR as i32,
+                    );
+                }
+                (MipmapType::Nearest, FilterMode::Nearest) => {
+                    gl::TexParameteri(
+                        gl::TEXTURE_2D,
+                        gl::TEXTURE_MIN_FILTER,
+                        gl::NEAREST_MIPMAP_NEAREST as i32,
+                    );
+                }
+                (MipmapType::Linear, FilterMode::Linear) => {
+                    gl::TexParameteri(
+                        gl::TEXTURE_2D,
+                        gl::TEXTURE_MIN_FILTER,
+                        gl::LINEAR_MIPMAP_LINEAR as i32,
+                    );
+                }
+                (MipmapType::Linear, FilterMode::Nearest) => {
+                    gl::TexParameteri(
+                        gl::TEXTURE_2D,
+                        gl::TEXTURE_MIN_FILTER,
+                        gl::LINEAR_MIPMAP_NEAREST as i32,
+                    );
+                }
+            }
+
+            // Set magnification filter (mipmaps don't affect magnification)
+            match base_filter {
+                FilterMode::Linear => {
+                    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);
+                }
+                FilterMode::Nearest => {
+                    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
                 }
             }
         }
@@ -151,5 +188,11 @@ impl Drop for Texture {
 pub enum MipmapType {
     None,
     Linear,
-    Nearest
+    Nearest,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum FilterMode {
+    Linear,
+    Nearest,
 }

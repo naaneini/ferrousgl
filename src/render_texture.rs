@@ -138,16 +138,6 @@ impl RenderTexture {
     pub fn depth_texture(&self) -> Option<&Texture> {
         self.depth_texture.as_ref()
     }
-
-    /// Sets the Mipmap filtering type of the texture.
-    pub fn set_mipmap_type(&mut self, mipmap_type: MipmapType) {
-        self.mipmap_type = mipmap_type;
-        self.texture.set_mipmap_type(mipmap_type);
-
-        if let Some(ref mut depth_texture) = self.depth_texture {
-            depth_texture.set_mipmap_type(mipmap_type);
-        }
-    }
 }
 
 impl Drop for RenderTexture {
