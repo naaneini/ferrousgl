@@ -1,6 +1,6 @@
 use gl::types::GLuint;
 
-use crate::{Texture, MipmapType};
+use crate::Texture;
 
 /// Represents a render texture, which allows rendering on. Can be used like a [`ferrousgl::texture::Texture`].
 pub struct RenderTexture {
@@ -9,7 +9,6 @@ pub struct RenderTexture {
     depth_texture: Option<Texture>, // Added depth texture
     width: u32,
     height: u32,
-    mipmap_type: MipmapType,
 }
 
 impl RenderTexture {
@@ -60,7 +59,6 @@ impl RenderTexture {
             depth_texture,
             width,
             height,
-            mipmap_type: MipmapType::None,
         })
     }
 

@@ -291,8 +291,8 @@ impl GlWindow {
     /// All subsequent OpenGL calls will operate on this context.
     pub fn make_current(&mut self) {
         self.window.make_current();
+        gl::load_with(|symbol| self.window.get_proc_address(symbol) as *const _);
     }
-
     /// Polls events (user input, system events) and swaps buffers.
     pub fn update(&mut self) {
         let frame_start = Instant::now();

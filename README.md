@@ -1,4 +1,6 @@
-# FerrousGL
+
+# <img src="ferrousgl_small.png" alt="Ferrousgl" width="30"> <img src="ferrousgl_logo.png" alt="Ferrousgl" width="120">
+
 FerrousGL is a simple-to-use Rust library that provides simple abstractions over OpenGL and GLFW for creating graphical applications and games easier. It offers a straightforward way to handle windows, rendering, shader, textures and meshes without having to be fluent in graphics programming.
 
 The library is very simple-to-use: First you can make a window. This window serves as the foundation for rendering meshes (on the main framebuffer or a custom render texture), shaders and input.
