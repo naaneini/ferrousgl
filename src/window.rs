@@ -287,6 +287,12 @@ impl GlWindow {
         self.pressed_keys.clear();
     }
 
+    /// Makes this window's OpenGL context current on the calling thread.
+    /// All subsequent OpenGL calls will operate on this context.
+    pub fn make_current(&mut self) {
+        self.window.make_current();
+    }
+
     /// Polls events (user input, system events) and swaps buffers.
     pub fn update(&mut self) {
         let frame_start = Instant::now();
