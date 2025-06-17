@@ -79,7 +79,7 @@ impl GlWindow {
             events,
             target_frame_time: Duration::from_secs(1) / config.target_framerate,
             last_frame_time: Instant::now(),
-            rendering_type: RenderingType::Solid,
+            rendering_type: RenderingType::Fill,
             mouse_wheel_delta: (0.0, 0.0),
             last_mouse_position: (0.0, 0.0),
             typed_keys: HashSet::new(),
@@ -293,6 +293,27 @@ impl GlWindow {
         self.window.make_current();
         gl::load_with(|symbol| self.window.get_proc_address(symbol) as *const _);
     }
+
+    /// Returns if the window is currently hovered.
+    pub fn is_hovered(&self) -> bool {
+        self.window.is_hovered()
+    }
+
+    /// Returns if the window is currently focused.
+    pub fn is_focused(&self) -> bool {
+        self.window.is_focused()
+    }
+
+    /// Returns if the window is currently visible.
+    pub fn is_visible(&self) -> bool {
+        self.window.is_visible()
+    }
+
+    /// Sets the window to be always on top of other windows.
+    pub fn set_floating(&mut self, floating: bool) {
+        self.window.set_floating(floating);
+    }
+
     /// Polls events (user input, system events) and swaps buffers.
     pub fn update(&mut self) {
         let frame_start = Instant::now();
@@ -365,15 +386,33 @@ impl GlWindow {
     pub fn render_mesh(&self, mesh: &Mesh) {
         unsafe {
             match self.rendering_type {
-                RenderingType::Solid => {
-                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
-                }
-                RenderingType::Wireframe => {
-                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
-                }
                 RenderingType::Points => {
-                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::POINT);
-                }
+                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::POINTS);
+                },
+                RenderingType::Lines => {
+                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINES);
+                },
+                RenderingType::LineStrip => {
+                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE_STRIP);
+                },
+                RenderingType::LineLoop => {
+                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE_LOOP);
+                },
+                RenderingType::Triangles => {
+                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::TRIANGLES);
+                },
+                RenderingType::TriangleStrip => {
+                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::TRIANGLE_STRIP);
+                },
+                RenderingType::TriangleFan => {
+                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::TRIANGLE_FAN);
+                },
+                RenderingType::Quads => {
+                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::QUADS);
+                },
+                RenderingType::Fill => {
+                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
+                },
             }
 
             mesh.bind();
@@ -508,9 +547,15 @@ impl From<DepthType> for Option<gl::types::GLenum> {
 /// Enum storing all different rendering types.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RenderingType {
-    Solid,
-    Wireframe,
     Points,
+    Lines,
+    LineStrip,
+    LineLoop,
+    Triangles,
+    TriangleStrip,
+    TriangleFan,
+    Quads,
+    Fill,
 }
 
 /// Enum containing all GLFW key codes converted to a custom implementation for easier usage.
