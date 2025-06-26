@@ -9,7 +9,7 @@ use glam::{bool, Vec4};
 use glfw::{fail_on_errors, Context, Key, WindowEvent};
 use std::time::{Duration, Instant};
 
-use crate::Mesh;
+use crate::{Mesh, Texture};
 
 /// A struct to manage an OpenGL context, window, rendering and input!
 pub struct GlWindow {
@@ -24,6 +24,8 @@ pub struct GlWindow {
     typed_keys: HashSet<char>,
     pressed_keys: HashSet<WindowKey>,
     previous_pressed_keys: HashSet<WindowKey>,
+    fb_texture: Texture,       // Persistent framebuffer texture
+    depth_texture: Texture,    // Persistent depth texture
 }
 
 impl GlWindow {
@@ -73,11 +75,39 @@ impl GlWindow {
             println!("[FerrousGl Error] MSAA Configuration has failed. This is likely a problem with your nvidia driver.\nYou can change the problematic setting by going into NVIDIA Control Panel > Manage 3D Settings and clicking restore.");
         }
 
+        let fb_texture = Texture::new_empty(config.width, config.height)
+            .expect("Failed to create framebuffer texture");
+        let depth_texture = Texture::new_empty(config.width, config.height)
+            .expect("Failed to create depth texture");
+
+        // Configure depth texture format
+        // In the new() function, modify depth texture creation:
+        unsafe {
+            gl::BindTexture(gl::TEXTURE_2D, depth_texture.id);
+            gl::TexImage2D(
+                gl::TEXTURE_2D,
+                0,
+                gl::DEPTH_COMPONENT32F as i32,  // Use 32-bit float format
+                config.width as i32,
+                config.height as i32,
+                0,
+                gl::DEPTH_COMPONENT,
+                gl::FLOAT,
+                ptr::null(),
+            );
+            // Set texture parameters
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::CLAMP_TO_EDGE as i32);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::CLAMP_TO_EDGE as i32);
+            gl::BindTexture(gl::TEXTURE_2D, 0);
+        }
+
         GlWindow {
             glfw,
             window,
             events,
-            target_frame_time: Duration::from_secs(1) / config.target_framerate,
+            target_frame_time: Duration::from_secs_f64(1.0 / config.target_framerate as f64),
             last_frame_time: Instant::now(),
             rendering_type: RenderingType::Fill,
             mouse_wheel_delta: (0.0, 0.0),
@@ -85,6 +115,8 @@ impl GlWindow {
             typed_keys: HashSet::new(),
             pressed_keys: HashSet::new(),
             previous_pressed_keys: HashSet::new(),
+            fb_texture,
+            depth_texture,
         }
     }
 
@@ -134,7 +166,7 @@ impl GlWindow {
 
     /// Set the target framerate.
     pub fn set_target_fps(&mut self, new_target_fps: u32) {
-        self.target_frame_time = Duration::from_secs(1) / new_target_fps;
+        self.target_frame_time = Duration::from_secs_f64(1.0 / new_target_fps as f64);
     }
 
     /// Set the preferred Rendering Type such as Lines, Points or (the default) Triangles.
@@ -192,6 +224,40 @@ impl GlWindow {
                 }
             }
         }
+    }
+
+    /// Updates the framebuffer and depth texture. You probably want to do this after rendering anything. 
+    /// Clearing the depth buffer or color buffer will not clear these textures.
+    pub fn update_framebuffer_textures(&mut self) {
+        let (width, height) = self.get_window_size();
+        
+        unsafe {
+            // Update color texture
+            gl::BindTexture(gl::TEXTURE_2D, self.fb_texture.id);
+            gl::CopyTexImage2D(
+                gl::TEXTURE_2D, 0, gl::RGBA,
+                0, 0, width, height, 0
+            );
+            
+            // Update depth texture
+            gl::BindTexture(gl::TEXTURE_2D, self.depth_texture.id);
+            gl::CopyTexImage2D(
+                gl::TEXTURE_2D, 0, gl::DEPTH_COMPONENT,
+                0, 0, width, height, 0
+            );
+            
+            gl::BindTexture(gl::TEXTURE_2D, 0);
+        }
+    }
+
+    /// Returns the framebuffer texture.
+    pub fn get_framebuffer_texture(&self) -> &Texture {
+        &self.fb_texture
+    }
+
+    /// Returns the depth texture.
+    pub fn get_depth_texture(&self) -> &Texture {
+        &self.depth_texture
     }
 
     /// Get the current clipboard string.
@@ -348,11 +414,18 @@ impl GlWindow {
         }
         self.window.swap_buffers();
 
-        // Calculate frame time and sleep if needed
+        // Calculate frame time and sleep if needed (precise)
         let frame_time = frame_start.elapsed();
         if frame_time < self.target_frame_time {
             let sleep_time = self.target_frame_time - frame_time;
-            std::thread::sleep(sleep_time);
+            // Sleep for the whole milliseconds part
+            if sleep_time > Duration::from_micros(500) {
+                std::thread::sleep(sleep_time - Duration::from_micros(500));
+            }
+            // Busy-wait for the rest
+            while frame_start.elapsed() < self.target_frame_time {
+                std::hint::spin_loop();
+            }
         }
 
         // Update last_frame_time for get_frame_time()
@@ -390,25 +463,7 @@ impl GlWindow {
                     gl::PolygonMode(gl::FRONT_AND_BACK, gl::POINTS);
                 },
                 RenderingType::Lines => {
-                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINES);
-                },
-                RenderingType::LineStrip => {
-                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE_STRIP);
-                },
-                RenderingType::LineLoop => {
-                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE_LOOP);
-                },
-                RenderingType::Triangles => {
-                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::TRIANGLES);
-                },
-                RenderingType::TriangleStrip => {
-                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::TRIANGLE_STRIP);
-                },
-                RenderingType::TriangleFan => {
-                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::TRIANGLE_FAN);
-                },
-                RenderingType::Quads => {
-                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::QUADS);
+                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
                 },
                 RenderingType::Fill => {
                     gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
@@ -549,12 +604,6 @@ impl From<DepthType> for Option<gl::types::GLenum> {
 pub enum RenderingType {
     Points,
     Lines,
-    LineStrip,
-    LineLoop,
-    Triangles,
-    TriangleStrip,
-    TriangleFan,
-    Quads,
     Fill,
 }
 

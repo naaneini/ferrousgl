@@ -8,6 +8,7 @@ fn main() {
         width: 800,
         height: 600,
         title: "Colored Pyramid".to_owned(),
+        target_framerate: 10000000,
         ..Default::default()
     });
 
@@ -57,10 +58,24 @@ fn main() {
         Vec3::new(0.0, 1.0, 0.0),
     );
 
+    // Add these before the main loop
+    let mut rotation_x = 0.0f32;
+    let mut rotation_y = 0.0f32;
+
     while !window.should_window_close() {
         window.clear_color(Vec4::new(0.0, 0.30, 0.0, 1.0));
         window.clear_depth();
-        let model = Mat4::from_rotation_y(window.get_mouse_delta().0 as f32 * 0.01);
+
+        // Get mouse delta and accumulate rotation
+        let (dx, dy) = window.get_mouse_delta();
+        rotation_y += dx as f32 * 0.01;
+        rotation_x += dy as f32 * 0.01;
+
+        // Clamp rotation_x to avoid flipping
+        rotation_x = rotation_x.clamp(-std::f32::consts::FRAC_PI_2, std::f32::consts::FRAC_PI_2);
+
+        // Build model matrix from both rotations
+        let model = Mat4::from_rotation_y(rotation_y) * Mat4::from_rotation_x(rotation_x);
 
         shader.bind_program();
 
@@ -70,7 +85,9 @@ fn main() {
         shader.set_uniform_matrix_4fv("model", model.to_cols_array().as_ref());
 
         // Draw the mesh
-        window.render_mesh(&mesh);
+        for _ in 0..1000 {
+            window.render_mesh(&mesh);
+        }
 
         shader.unbind_program();
 

@@ -173,6 +173,84 @@ impl Texture {
     pub fn height(&self) -> u32 {
         self.height
     }
+
+    pub fn save_to_file(&self, path: &Path) -> Result<(), String> {
+    // Bind the texture
+    unsafe {
+        gl::BindTexture(gl::TEXTURE_2D, self.id);
+    }
+
+    // First try to read as RGBA texture
+    let mut buffer = vec![0u8; (self.width * self.height * 4) as usize];
+    
+    unsafe {
+        gl::GetTexImage(
+            gl::TEXTURE_2D,
+            0,
+            gl::RGBA,
+            gl::UNSIGNED_BYTE,
+            buffer.as_mut_ptr() as *mut GLvoid,
+        );
+    }
+
+    // Check if we got meaningful RGBA data (not all zeros)
+    let is_depth_texture = buffer.iter().all(|&x| x == 0);
+    
+    if is_depth_texture {
+        // If it's a depth texture, read it as depth data
+        let mut depth_buffer = vec![0f32; (self.width * self.height) as usize];
+        
+        unsafe {
+            gl::GetTexImage(
+                gl::TEXTURE_2D,
+                0,
+                gl::DEPTH_COMPONENT,
+                gl::FLOAT,
+                depth_buffer.as_mut_ptr() as *mut GLvoid,
+            );
+            
+            // Unbind the texture
+            gl::BindTexture(gl::TEXTURE_2D, 0);
+        }
+
+        // Convert depth values to red-black gradient
+        let mut image_buffer = Vec::with_capacity((self.width * self.height * 4) as usize);
+        
+        for depth in depth_buffer {
+            // Normalize depth value (assuming it's in [0,1] range)
+            let depth = depth.clamp(0.0, 1.0);
+            
+            // Convert to red-black gradient
+            image_buffer.push((depth * 255.0) as u8); // R
+            image_buffer.push(0);                     // G
+            image_buffer.push(0);                     // B
+            image_buffer.push(255);                   // A
+        }
+
+        // Create and save the image
+        match image::RgbaImage::from_raw(self.width, self.height, image_buffer) {
+            Some(image) => {
+                image.save(path).map_err(|e| e.to_string())?;
+                Ok(())
+            }
+            None => Err("Failed to create image from depth texture data".to_string()),
+        }
+    } else {
+        // Regular RGBA texture
+        unsafe {
+            // Unbind the texture
+            gl::BindTexture(gl::TEXTURE_2D, 0);
+        }
+
+        match image::RgbaImage::from_raw(self.width, self.height, buffer) {
+            Some(image) => {
+                image.save(path).map_err(|e| e.to_string())?;
+                Ok(())
+            }
+            None => Err("Failed to create image from texture data".to_string()),
+        }
+    }
+}
 }
 
 impl Drop for Texture {
