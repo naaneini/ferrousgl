@@ -12,6 +12,7 @@ The library is very simple-to-use: First you can make a window. This window serv
 - **Meshes**: Meshes are simple-to-use and allow for custom vertex attributes.
 - **Shaders**: You can load shaders from files or from code. There is support for uniforms and textures.
 - **Textures**: The textures allow you to load images to use in shaders and there are also render textures for rendering to an off screen buffer!
+- **Hot-Shader-Reloading**: Shaders are able to be reloaded at runtime, allowing for hot-shader-reloading.
 
 > The library is designed to be simple-to-use while providing enough flexibility for most graphics programming tasks. It handles much of the boilerplate OpenGL code while exposing many things needed for 2D/3D rendering.
 

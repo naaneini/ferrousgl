@@ -85,9 +85,7 @@ fn main() {
         shader.set_uniform_matrix_4fv("model", model.to_cols_array().as_ref());
 
         // Draw the mesh
-        for _ in 0..1000 {
-            window.render_mesh(&mesh);
-        }
+        window.render_mesh(&mesh);
 
         shader.unbind_program();
 

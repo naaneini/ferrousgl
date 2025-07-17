@@ -47,6 +47,23 @@ impl Shader {
         Ok(Self::new_from_source(&vertex_source, &fragment_source))
     }
 
+    /// Recompiles the shader from the given vertex and fragment shader files.
+    /// Returns Ok(()) on success, or an error message if compilation fails.
+    pub fn recompile_from_file(&mut self, vertex_path: &Path, fragment_path: &Path) -> Result<(), String> {
+        match Self::new_from_file(vertex_path, fragment_path) {
+            Ok(new_shader) => {
+                unsafe { gl::DeleteProgram(self.id) };
+                self.id = new_shader.id;
+                std::mem::forget(new_shader);
+                Ok(())
+            },
+            Err(e) => {
+                eprintln!("[Shader Recompile Error] {}", e);
+                Err(e)
+            }
+        }
+    }
+
     /// Internal function to compile a shader.
     fn compile_shader(shader_type: GLenum, source: &str) -> Result<GLuint, String> {
         let shader = unsafe { gl::CreateShader(shader_type) };

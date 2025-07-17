@@ -1,6 +1,6 @@
 [package]
 name = "ferrousgl"
-version = "0.0.20"
+version = "0.0.21"
 edition = "2021"
 authors = ["EqualsAndString <equalsstr@gmail.com>"]
 description = "Simple-to-use Rust library that provides simple abstractions over OpenGL and GLFW for creating graphical applications and games easier."
@@ -21,6 +21,7 @@ glm = "0.2.3"
 image = "0.25.6"
 rusttype = "0.9.3"
 rand = "0.9.1"
+notify = "8.1.0"
 
 [package.metadata.docs.rs]
 all-features = true
