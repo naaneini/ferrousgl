@@ -2,11 +2,11 @@
 name = "ferrousgl"
 version = "0.0.21"
 edition = "2021"
-authors = ["EqualsAndString <equalsstr@gmail.com>"]
+authors = ["Unidreow <equalsstr@gmail.com>"]
 description = "Simple-to-use Rust library that provides simple abstractions over OpenGL and GLFW for creating graphical applications and games easier."
 readme = "README.md"
 license = "MIT"
-repository = "https://github.com/EqualsAndString/ferrousgl"
+repository = "https://github.com/unidreow/ferrousgl"
 
 [lib]
 name = "ferrousgl"
