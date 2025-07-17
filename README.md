@@ -1,6 +1,11 @@
 
 # <img src="ferrousgl_small.png" alt="Ferrousgl" width="30"> <img src="ferrousgl_logo.png" alt="Ferrousgl" width="120">
 
+[Key Features](#key-features)\
+[How to run Examples](#how-to-run-examples)\
+[Example use cases](#example-use-cases)\
+[Vision](#vision)
+
 FerrousGL is a simple-to-use Rust library that provides simple abstractions over OpenGL and GLFW for creating graphical applications and games easier. It offers a straightforward way to handle windows, rendering, shader, textures and meshes without having to be fluent in graphics programming.
 
 The library is very simple-to-use: First you can make a window. This window serves as the foundation for rendering meshes (on the main framebuffer or a custom render texture), shaders and input.
@@ -22,6 +27,12 @@ The library is very simple-to-use: First you can make a window. This window serv
 <img src="./screenshots/simple_water.png" alt="Animated simple water" title="Animated simple water" width="300">
 <img src="./screenshots/shadow_mapping.png" alt="Wooden rotating cube ontop of podest" title="Wooden rotating cube ontop of podest" width="300">
 <img src="./screenshots/blend_mode.png" alt="Example showing blend modes" title="Example showing blend modes" width="300">
+
+## How to run examples
+1) Download the repository
+2) Navigate into the repositories directory
+3) Run `cargo run --example` to list all available examples
+4) Run an example with `cargo run --example particles --release` to run it in release mode. Replace `particles` with the name of the example.
 
 ## Example use cases
 - Graphical applications such as drawing apps
